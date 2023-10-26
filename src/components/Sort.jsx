@@ -1,21 +1,28 @@
 import { useState } from 'react';
+import OutsideClickHandler from 'react-outside-click-handler';
 
-function Sort() {
+function Sort({ sortType, setSortType, sortOrder, setSortOrder }) {
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
-  const [selectedSortItem, setSelectedSortItem] = useState(0);
-  const list = ['популярности', 'цене', 'алфавиту'];
-  const sortName = list[selectedSortItem];
 
-  const onClickSortItem = (i) => {
-    setSelectedSortItem(i);
+  const sortList = [
+    { name: 'популярности', sort: 'rating' },
+    { name: 'цене', sort: 'price' },
+    { name: 'алфавиту', sort: 'title' },
+  ];
+
+  const onClickSortItem = (obj) => {
+    setSortType(obj);
     setIsVisiblePopup(false);
   };
   return (
     <div className='sort'>
       <div className='sort__label'>
         <svg
-          width='10'
-          height='6'
+          onClick={() => setSortOrder(!sortOrder)}
+          transform={sortOrder ? 'rotate(-180 0 0)' : ''}
+          cursor='pointer'
+          width='15'
+          height='10'
           viewBox='0 0 10 6'
           fill='none'
           xmlns='http://www.w3.org/2000/svg'>
@@ -24,23 +31,26 @@ function Sort() {
             fill='#2C2C2C'
           />
         </svg>
+
         <b>Сортировка по:</b>
-        <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{sortName}</span>
+        <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{sortType.name}</span>
       </div>
-      {isVisiblePopup && (
-        <div className='sort__popup'>
-          <ul>
-            {list.map((name, index) => (
-              <li
-                key={index}
-                onClick={() => onClickSortItem(index)}
-                className={selectedSortItem === index ? 'active' : ''}>
-                {name}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <OutsideClickHandler onOutsideClick={() => setIsVisiblePopup(false)}>
+        {isVisiblePopup && (
+          <div className='sort__popup'>
+            <ul>
+              {sortList.map((sortItem, index) => (
+                <li
+                  key={index}
+                  onClick={() => onClickSortItem(sortItem)}
+                  className={sortType.sort === sortItem.sort ? 'active' : ''}>
+                  {sortItem.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </OutsideClickHandler>
     </div>
   );
 }
