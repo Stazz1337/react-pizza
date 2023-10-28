@@ -1,7 +1,8 @@
 import logo from '../assets/img/pizza-logo.svg';
 import { Link } from 'react-router-dom';
+import Search from './Search';
 
-function Header() {
+function Header({setSearchValue, searchValue}) {
   return (
     <header className='header'>
       <div className='container'>
@@ -14,6 +15,8 @@ function Header() {
             </div>
           </div>
         </Link>
+
+        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
 
         <Link to={'/cart'}>
           <div className='header__cart'>
