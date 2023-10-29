@@ -1,17 +1,24 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import OutsideClickHandler from 'react-outside-click-handler';
 
-function Sort({ sortType, setSortType, sortOrder, setSortOrder }) {
+import {setSort} from '../redux/slicers/filterSlice'
+
+function Sort({ sortOrder, setSortOrder }) {
+  const dispatch = useDispatch();
+  const sort = useSelector((state) => state.filter.sort);
+
+
   const [isVisiblePopup, setIsVisiblePopup] = useState(false);
 
   const sortList = [
-    { name: 'популярности', sort: 'rating' },
-    { name: 'цене', sort: 'price' },
-    { name: 'алфавиту', sort: 'title' },
+    { name: 'популярности', value: 'rating' },
+    { name: 'цене', value: 'price' },
+    { name: 'алфавиту', value: 'title' },
   ];
 
   const onClickSortItem = (obj) => {
-    setSortType(obj);
+    dispatch(setSort(obj));
     setIsVisiblePopup(false);
   };
   return (
@@ -33,7 +40,7 @@ function Sort({ sortType, setSortType, sortOrder, setSortOrder }) {
         </svg>
 
         <b>Сортировка по:</b>
-        <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{sortType.name}</span>
+        <span onClick={() => setIsVisiblePopup(!isVisiblePopup)}>{sort.name}</span>
       </div>
       <OutsideClickHandler onOutsideClick={() => setIsVisiblePopup(false)}>
         {isVisiblePopup && (
@@ -43,7 +50,7 @@ function Sort({ sortType, setSortType, sortOrder, setSortOrder }) {
                 <li
                   key={index}
                   onClick={() => onClickSortItem(sortItem)}
-                  className={sortType.sort === sortItem.sort ? 'active' : ''}>
+                  className={sort.value === sortItem.sort ? 'active' : ''}>
                   {sortItem.name}
                 </li>
               ))}
